@@ -45,9 +45,9 @@ function Elaborate(call, callback){
 
 
 function main() {
-  var server = new grpc.Server();
-  server.addProtoService(hello_proto.Greeter.service,
-                         {sayHello: sayHello, sayHelloAgain: sayHelloAgain});
-  server.bind('0.0.0.0:50051', grpc.ServerCredentials.createInsecure());
+  const server = new grpc.Server();
+  server.addProtoService(hello_proto.Candidate.service,
+                         {Answer: Answer, Elaborate: Elaborate});
+  server.bind('23.236.49.28:50051', grpc.ServerCredentials.createInsecure());
   server.start();
 }
