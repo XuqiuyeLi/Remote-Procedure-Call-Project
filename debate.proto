@@ -1,11 +1,10 @@
 syntax = "proto3";
 
-option java_package = "net.yairsovran.consultation";
+package = debate;
 
 service Candidate {
-  // Sends a greeting
   rpc Answer (AnswerRequest) returns (AnswerReply) {}
-  rpc Elaborate (HelloRequest) returns (HelloReply) {}
+  rpc Elaborate (ElaborateRequest) returns (ElaborateReply) {}
 }
 
 // The request message containing the question.
@@ -22,7 +21,7 @@ message AnswerReply {
 // The request message containing the topic and repeated integer.
 message ElaborateRequest {
   required string topic = 1;
-  repeated int32 blah_run = 1;
+  repeated int32 blah_run = 2;
 }
 
 // The response message containing the answer
