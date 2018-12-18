@@ -7,9 +7,11 @@
 # YOUR INSTRUCTIONS GO HERE
 
 # TODO: document how to build your server and client code (if applicable)
-# YOUR INSTRUCTIONS GO HERE
+# Build Server Code
+
+# Build Client Code
 
 # TODO: document how run your server (on localhost)
-# YOUR INSTRUCTIONS GO HERE
+# How to run the server on localhost
 
 
