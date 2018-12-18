@@ -1,3 +1,21 @@
+var PROTO_PATH = __dirname + '/../../../protos/debate.proto';
+var grpc = require('grpc');
+var protoLoader = require('@grpc/proto-loader');
+// Suggested options for similarity to existing grpc.load behavior
+var packageDefinition = protoLoader.loadSync(
+    PROTO_PATH,
+    {keepCase: true,
+     longs: String,
+     enums: String,
+     defaults: true,
+     oneofs: true
+    });
+var political_debate_proto = grpc.loadPackageDefinition(packageDefinition).debate;
+
+
+
+
+
 function Answer(call, callback){
 	// all strings should be case insensitive
 	const question = call.request.question.toLowerCase();
@@ -46,8 +64,10 @@ function Elaborate(call, callback){
 
 function main() {
   const server = new grpc.Server();
-  server.addProtoService(hello_proto.Candidate.service,
+  server.addProtoService(political_debate_proto.Candidate.service,
                          {Answer: Answer, Elaborate: Elaborate});
-  server.bind('23.236.49.28:50051', grpc.ServerCredentials.createInsecure());
+  server.bind('0.0.0.0:50051', grpc.ServerCredentials.createInsecure());
   server.start();
 }
+
+main();
