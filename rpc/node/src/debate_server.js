@@ -1,5 +1,5 @@
-var PROTO_PATH1 = __dirname + '/../protos/debate.proto';
-var PROTO_PATH2 = __dirname + '/../protos/consultation.proto';
+var PROTO_PATH1 = __dirname + '/../../protos/debate.proto';
+var PROTO_PATH2 = __dirname + '/../../protos/consultation.proto';
 var grpc = require('grpc');
 var protoLoader = require('@grpc/proto-loader');
 // Suggested options for similarity to existing grpc.load behavior
