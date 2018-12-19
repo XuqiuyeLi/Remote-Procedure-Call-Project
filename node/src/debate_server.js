@@ -1,5 +1,5 @@
-var PROTO_PATH1 = __dirname + '/../../protos/debate.proto';
-var PROTO_PATH2 = __dirname + '/../../protos/consultation.proto';
+var PROTO_PATH1 = __dirname + '/../protos/debate.proto';
+var PROTO_PATH2 = __dirname + '/../protos/consultation.proto';
 var grpc = require('grpc');
 var protoLoader = require('@grpc/proto-loader');
 // Suggested options for similarity to existing grpc.load behavior
@@ -29,8 +29,6 @@ console.log(consultation_proto);
 function Answer(call, callback){
 	// all strings should be case insensitive
 	const question = call.request.question.toLowerCase();
-	console.log(question.slice(0,4));
-	console.log(question.slice(0,4) === 'what');
 	const answers = ["goes too far","doesn't go too far enough"];
 	// if the question doesn't start with "why", "what", "how", "who"
 	if(question.slice(0, 3)!== 'why' && question.slice(0, 4) !== 'what' && question.slice(0, 3) !== 'how' && question.slice(0, 3) !== 'who' && question.slice(0, 4) !== 'when'){
@@ -39,7 +37,11 @@ function Answer(call, callback){
 	else{
 		const question_sub = question.replace("you", "I").replace("your", "my");
 		// make an RPC call with 'question' to the CampaignManager.Retort service
-		callback(null, {answer: 'You asked me ' + question_sub + ' ' + 'but I want to say that I really like Japanese food' + '\n'});
+		const consultation = new consultation_proto.CampaignManager('23.236.49.28:50051',
+                                       grpc.credentials.createInsecure());
+		consultation.Retort({original_question: question}, function(err, response) {
+			callback(null, {answer: 'You asked me ' + question_sub + ' ' + 'but I want to say that' + ' ' + response.retort + '\n'});
+		});
 	}
 }
 
