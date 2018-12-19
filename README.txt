@@ -4,6 +4,7 @@
 
 
 # Setup
+	- must download the Remote-Procedure-Call-Project folder under ex3 and run this program locally, otherwise the paths for both protos in client.js and server.js will likely be wrong
 	- make sure your node: version 4.0.0 or higher
 	- Go to src folder in ex3 `$ cd rpc/node/src `
 	- Install all the denpendencies `$ npm install`

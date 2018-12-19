@@ -1,0 +1,265 @@
+diff --git a/ex3/README.txt b/ex3/README.txt
+index 5eda569..9001e5e 100644
+--- a/ex3/README.txt
++++ b/ex3/README.txt
+@@ -1,11 +1,30 @@
++# Remote-Procedure-Call-Project
++
+ # README.txt contains instructions how to build and run your code.
+
+-# TODO: document how to invoke protoc in order to generate the stubs in your
+-# language of choice.
+-# YOUR INSTRUCTIONS GO HERE
+
+-# TODO: document how to build your server and client code (if applicable)
+-# YOUR INSTRUCTIONS GO HERE
++# Setup
++	- must download the Remote-Procedure-Call-Project folder under ex3 and run this program locally, otherwise the paths for both protos in client.js and server.js will likely be wrong
++	- make sure your node: version 4.0.0 or higher
++	- Go to src folder in ex3 `$ cd rpc/node/src `
++	- Install all the denpendencies `$ npm install`
++
++# Build Server Code
++	1. Generate RPC libraries for debate.proto and consultation.proto in protos
++	2. Write a function called 'Answer' which takes 'question' from client, and output an answer to the client
++	3. Write a function called 'Elaborate' which takes 'topics & numbers' from client, and output an answer to the client
++	4. In the main function, set up the ProtoService and bind server to localhost, then start the server.
++
++# Build Client Code
++	1. Generate RPC libraries for debate.proto in protos
++	2. Build commandline tools for listening to user input
++	3. Pass the 'question' command to answer method, and log out the 'answer' from the server
++	4. Pass the 'topic' and 'numbers' commands to elaborate method, and log out the 'answer' from the server
+
+-# TODO: document how run your server (on localhost)
+-# YOUR INSTRUCTIONS GO HERE
++# How to run the server on localhost
++	- Run the server first `$ node debate_client.js` in terminal
++	- In another terminal, run the client `$ node debate_client.js` with commands
++               - client command example for answer: `$ node debate_client.js answer "When is Christmas"`
++               - client command example for elaborate: `$ node debate_client.js elaborate "NYU" 3 2 1`
++               - ERROR: program will end if invalid commandline format
++               - IMPORTANT: enter 0 as blah_run command to indicate no runs
+diff --git a/ex3/Remote-Procedure-Call-Project b/ex3/Remote-Procedure-Call-Project
+new file mode 160000
+index 0000000..3ebec21
+--- /dev/null
++++ b/ex3/Remote-Procedure-Call-Project
+@@ -0,0 +1 @@
++Subproject commit 3ebec21fce9932d0eebe7767386ffd3caffa0815-dirty
+diff --git a/ex3/consultation.proto b/ex3/consultation.proto
+index a2fadb4..a026e20 100644
+--- a/ex3/consultation.proto
++++ b/ex3/consultation.proto
+@@ -17,6 +17,7 @@ message RetortRequest {
+   string original_question = 1;
+ }
+
++
+ // The retort to use.
+ message RetortReply {
+   string retort = 1;
+diff --git a/ex3/debate_client.js b/ex3/debate_client.js
+new file mode 100644
+index 0000000..765dfb2
+--- /dev/null
++++ b/ex3/debate_client.js
+@@ -0,0 +1,57 @@
++var PROTO_PATH = __dirname + '/../../protos/debate.proto';
++var grpc = require('grpc');
++var protoLoader = require('@grpc/proto-loader');
++// Suggested options for similarity to existing grpc.load behavior
++var packageDefinition = protoLoader.loadSync(
++    PROTO_PATH,
++    {keepCase: true,
++     longs: String,
++     enums: String,
++     defaults: true,
++     oneofs: true
++    });
++var political_debate_proto = grpc.loadPackageDefinition(packageDefinition).debate;
++
++
++
++
++
++function main() {
++  const client = new political_debate_proto.Candidate('localhost:50051',
++                                       grpc.credentials.createInsecure());
++
++  let question, topic, numbers;
++  if (process.argv.length === 4) {
++	if(process.argv[2] === 'answer'){
++               question = process.argv[3];
++	}
++    else{
++      console.log("Invalid command lines\n");
++    }
++  } else if (process.argv.length >= 4) {
++    if(process.argv[2] === 'elaborate'){
++               topic = process.argv[3];
++               numbers = [...process.argv.slice(4)];
++	}
++    else{
++      console.log("Invalid command lines\n");
++    }
++  }
++  else{
++	console.log("Only take 2 args for answer, 3 args for elaborate!\n");
++	return -1;
++  }
++
++  if(question !== undefined){
++    client.Answer({question: question}, function(err, response) {
++      console.log('Answer:', response.answer);
++    });
++  }
++  if(topic !== undefined && numbers !== undefined){
++    client.Elaborate({topic: topic, blah_run: numbers}, function(err, response) {
++      console.log('Elaborated Answer:', response.answer);
++    });
++  }
++
++}
++
+diff --git a/ex3/debate_proto b/ex3/debate_proto
+new file mode 100644
+index 0000000..8294e30
+--- /dev/null
++++ b/ex3/debate_proto
+@@ -0,0 +1,35 @@
++syntax = "proto3";
++
++option java_multiple_files = true;
++option java_package = "io.grpc.examples.debate";
++option java_outer_classname = "DebateProto";
++
++package debate;
++
++service Candidate {
++  rpc Answer (AnswerRequest) returns (AnswerReply) {}
++  rpc Elaborate (ElaborateRequest) returns (ElaborateReply) {}
++}
++
++// The request message containing the question.
++message AnswerRequest {
++  string question = 1;
++}
++
++// The response message containing the answer
++message AnswerReply {
++  string answer = 1;
++}
++
++
++// The request message containing the topic and repeated integer.
++message ElaborateRequest {
++  string topic = 1;
++  repeated int32 blah_run = 2;
++}
++
++// The response message containing the answer
++message ElaborateReply {
++  string answer = 1;
++}
++
+diff --git a/ex3/debate_server.js b/ex3/debate_server.js
+new file mode 100644
+index 0000000..5445721
+--- /dev/null
++++ b/ex3/debate_server.js
+@@ -0,0 +1,92 @@
++var PROTO_PATH1 = __dirname + '/../../protos/debate.proto';
++var PROTO_PATH2 = __dirname + '/../../protos/consultation.proto';
++var grpc = require('grpc');
++var protoLoader = require('@grpc/proto-loader');
++// Suggested options for similarity to existing grpc.load behavior
++var packageDefinition1 = protoLoader.loadSync(
++    PROTO_PATH1,
++    {keepCase: true,
++     longs: String,
++     enums: String,
++     defaults: true,
++     oneofs: true
++    });
++var political_debate_proto = grpc.loadPackageDefinition(packageDefinition1).debate;
++var packageDefinition2 = protoLoader.loadSync(
++    PROTO_PATH2,
++    {keepCase: true,
++     longs: String,
++     enums: String,
++     defaults: true,
++     oneofs: true
++    });
++var consultation_proto = grpc.loadPackageDefinition(packageDefinition2).consultation;
++console.log(consultation_proto);
++
++
++
++
++function Answer(call, callback){
++	// all strings should be case insensitive
++	const question = call.request.question.toLowerCase();
++	const answers = ["goes too far","doesn't go too far enough"];
++	// if the question doesn't start with "why", "what", "how", "who"
++	if(question.slice(0, 3)!== 'why' && question.slice(0, 4) !== 'what' && question.slice(0, 3) !== 'how' && question.slice(0, 3) !== 'who' && question.slice(0, 4) !== 'when'){
++               callback(null, {answer: 'your 3 cent titanium tax ' + answers[Math.round(Math.random())]});
++	}
++	else{
++               const question_sub = question.replace("you", "I").replace("your", "my");
++               // make an RPC call with 'question' to the CampaignManager.Retort service
++               const consultation = new consultation_proto.CampaignManager('23.236.49.28:50051',
++                                       grpc.credentials.createInsecure());
++               consultation.Retort({original_question: question}, function(err, response) {
++                       callback(null, {answer: 'You asked me ' + question_sub + ' ' + 'but I want to say that' + ' ' + response.retort + '\n'});
++               });
++	}
++}
++
++
++function Elaborate(call, callback){
++	const numbers = [...call.request.blah_run];
++	const topic = call.request.topic;
++	// when blah_run is empty
++	if(numbers[0] === 0){
++               console.log("no runs, just topic printed");
++               callback(null, {answer: topic});
++	}
++	// when blah_run has one run, "topic" is printed after it
++	else if(numbers.length === 1){
++               let string = '';
++               for(let i = 0; i < numbers[0]; i++){
++                       string += 'blah ';
++               }
++               callback(null, {answer: string + topic});
++	}
++	// more than one run
++	else if(numbers.length > 1){
++               let string = '';
++               let x = 0;
++               while( x < numbers.length - 1){
++                       for(let i = 0; i < numbers[x]; i++){
++                               string += 'blah ';
++                       }
++                       string += topic + ' ';
++                       x++;
++               }
++               for(let i = 0; i < numbers[x]; i++){
++                       string += 'blah ';
++               }
++               callback(null, {answer: string});
++	}
++}
++
++
++
++function main() {
++  const server = new grpc.Server();
++  server.addProtoService(political_debate_proto.Candidate.service,
++                         {Answer: Answer, Elaborate: Elaborate});
++  server.bind('0.0.0.0:50051', grpc.ServerCredentials.createInsecure());
++  server.start();
++}
++
++main();
+
