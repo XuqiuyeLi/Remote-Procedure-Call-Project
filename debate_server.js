@@ -21,7 +21,7 @@ function Answer(call, callback){
 	const question = call.request.question.toLowerCase();
 	const answers[] = ["goes too far","doesn't go too far enough"];
 	// if the question doesn't start with "why", "what", "how", "who"
-	if(question.slice(0, 3)!== 'why' || question.slice(0, 4) !== 'what' || question.slice(0, 3) !== 'how' || question.slice(0, 3) !== 'who'){
+	if(question.slice(0, 3)!== 'why' || question.slice(0, 4) !== 'what' || question.slice(0, 3) !== 'how' || question.slice(0, 3) !== 'who' || question.slice(0, 4) !== 'when'){
 		callback(null, {answer: 'your 3 cent titanium tax ' + answers[Math.round(Math.random())]});
 	}
 	else{

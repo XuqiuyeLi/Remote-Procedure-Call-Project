@@ -9,22 +9,22 @@ service Candidate {
 
 // The request message containing the question.
 message AnswerRequest {
-  required string question = 1;
+  string question = 1;
 }
 
 // The response message containing the answer
 message AnswerReply {
-  required string answer = 1;
+  string answer = 1;
 }
 
 
 // The request message containing the topic and repeated integer.
 message ElaborateRequest {
-  required string topic = 1;
+  string topic = 1;
   repeated int32 blah_run = 2;
 }
 
 // The response message containing the answer
 message ElaborateReply {
-  required string answer = 1;
+  string answer = 1;
 }
