@@ -53,27 +53,6 @@ function main() {
     }); 
   }
 
-  /*
-  // Answer method test code 
-  client.Answer({question: 'What do you want your birthday present to be?'}, function(err, response) {
-    console.log('Original Answer:', response.answer);
-  });
-  client.Answer({question: 'Do you want your birthday present to be?'}, function(err, response) {
-    console.log('Original Answer:', response.answer);
-  });
-  
-
-  // Elaborate method test code
-  client.Elaborate({topic: 'foreign policy', blah_run: [3,2,4]}, function(err, response) {
-    console.log('Elaborated Answer:', response.answer);
-  });
-  client.Elaborate({topic:'XMAS', blah_run: [2]}, function(err, response) {
-    console.log('Elaborated Answer:', response.answer);
-  });
-  client.Elaborate({topic:'Detective Conan', blah_run: [0]}, function(err, response) {
-    console.log('Elaborated Answer:', response.answer);
-  });
-  */
 }
 
 
