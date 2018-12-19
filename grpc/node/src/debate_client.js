@@ -19,30 +19,41 @@ var political_debate_proto = grpc.loadPackageDefinition(packageDefinition).debat
 function main() {
   const client = new political_debate_proto.Candidate('localhost:50051',
                                        grpc.credentials.createInsecure());
-  /*
+  
   let question, topic, numbers;
-  if (process.argv.length === 2) {
-  	if(process.argv[1] === 'answer'){
-  		question = process.argv[2];
+  if (process.argv.length === 4) {
+  	if(process.argv[2] === 'answer'){
+  		question = process.argv[3];
   	}
-    console.log("Invalid command lines\n");
-  } else if (process.argv.length >= 3) {
-    if(process.argv[1] === 'elaborate'){
-  		topic = process.argv[2];
-  		numbers = [...process.argv.slice(3)];
+    else{
+      console.log("Invalid command lines\n");
+    }
+  } else if (process.argv.length >= 4) {
+    if(process.argv[2] === 'elaborate'){
+  		topic = process.argv[3];
+  		numbers = [...process.argv.slice(4)];
   	}
-    console.log("Invalid command lines\n");
+    else{
+      console.log("Invalid command lines\n");
+    }
   }
   else{
   	console.log("Only take 2 args for answer, 3 args for elaborate!\n");
   	return -1;
   }
-  client.Answer({question: question}, function(err, response) {
-    console.log('Original Answer:', response.answer);
-  });
-  client.Elaborate({topic: topic, blah_run: numbers}, function(err, response) {
-    console.log('Elaborated Answer:', response.answer);
-  }); */
+  
+  if(question !== undefined){
+    client.Answer({question: question}, function(err, response) {
+      console.log('Answer:', response.answer);
+    });
+  }
+  if(topic !== undefined && numbers !== undefined){
+    client.Elaborate({topic: topic, blah_run: numbers}, function(err, response) {
+      console.log('Elaborated Answer:', response.answer);
+    }); 
+  }
+
+  /*
   // Answer method test code 
   client.Answer({question: 'What do you want your birthday present to be?'}, function(err, response) {
     console.log('Original Answer:', response.answer);
@@ -62,6 +73,7 @@ function main() {
   client.Elaborate({topic:'Detective Conan', blah_run: [0]}, function(err, response) {
     console.log('Elaborated Answer:', response.answer);
   });
+  */
 }
 
 

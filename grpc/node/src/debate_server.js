@@ -1,17 +1,27 @@
-var PROTO_PATH = __dirname + '/../../protos/debate.proto';
+var PROTO_PATH1 = __dirname + '/../../protos/debate.proto';
+var PROTO_PATH2 = __dirname + '/../../protos/consultation.proto';
 var grpc = require('grpc');
 var protoLoader = require('@grpc/proto-loader');
 // Suggested options for similarity to existing grpc.load behavior
-var packageDefinition = protoLoader.loadSync(
-    PROTO_PATH,
+var packageDefinition1 = protoLoader.loadSync(
+    PROTO_PATH1,
     {keepCase: true,
      longs: String,
      enums: String,
      defaults: true,
      oneofs: true
     });
-var political_debate_proto = grpc.loadPackageDefinition(packageDefinition).debate;
-
+var political_debate_proto = grpc.loadPackageDefinition(packageDefinition1).debate;
+var packageDefinition2 = protoLoader.loadSync(
+    PROTO_PATH2,
+    {keepCase: true,
+     longs: String,
+     enums: String,
+     defaults: true,
+     oneofs: true
+    });
+var consultation_proto = grpc.loadPackageDefinition(packageDefinition2).consultation;
+console.log(consultation_proto);
 
 
 
@@ -29,7 +39,7 @@ function Answer(call, callback){
 	else{
 		const question_sub = question.replace("you", "I").replace("your", "my");
 		// make an RPC call with 'question' to the CampaignManager.Retort service
-		callback(null, {answer: 'You asked me ' + question_sub + ' but I want to say that I really like Japanese food'});
+		callback(null, {answer: 'You asked me ' + question_sub + ' ' + 'but I want to say that I really like Japanese food' + '\n'});
 	}
 }
 
