@@ -3,7 +3,7 @@
 This project created an RPC client and server that simulate political debates with gRPC framework in Node.js.
 
 # Setup
-	- must download the Remote-Procedure-Call-Project folder under ex3 and run this program locally, otherwise the paths for both protos in client.js and server.js will likely be wrong
+	- must download the Remote-Procedure-Call-Project folder and run this program locally, otherwise the paths for both protos in client.js and server.js will likely be wrong
 	- make sure your node: version 4.0.0 or higher
 	- Go to src folder in ex3 `$ cd rpc/node/src `
 	- Install all the denpendencies `$ npm install`
@@ -25,5 +25,5 @@ This project created an RPC client and server that simulate political debates wi
 	- In another terminal, run the client `$ node debate_client.js` with commands
 		- client command example for answer: `$ node debate_client.js answer "When is Christmas"`
 		- client command example for elaborate: `$ node debate_client.js elaborate "NYU" 3 2 1`
-		- ERROR: program will end if invalid commandline format
-		- IMPORTANT: enter 0 as blah_run command to indicate no runs
+		- **ERROR**: program will end if invalid commandline format
+		- **IMPORTANT**: enter 0 as blah_run command to indicate no runs
