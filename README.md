@@ -1,7 +1,6 @@
 # Remote-Procedure-Call-Project
 
-# README.txt contains instructions how to build and run your code.
-
+This project created an RPC client and server that simulate political debates with gRPC framework in Node.js.
 
 # Setup
 	- must download the Remote-Procedure-Call-Project folder under ex3 and run this program locally, otherwise the paths for both protos in client.js and server.js will likely be wrong
